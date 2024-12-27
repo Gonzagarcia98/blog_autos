@@ -1,0 +1,42 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 30px auto; padding: 20px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <!-- Título y metadatos -->
+        <h1 style="color: #333; margin-bottom: 10px;">{{ page.titulo }}</h1>
+        <h3 style="color: #666; margin-bottom: 20px;">{{ page.subtitulo }}</h3>
+        
+        <div style="margin-bottom: 20px; color: #888;">
+            <small>Por {{ page.autor.username }} - {{ page.fecha_creacion|date:"d/m/Y" }}</small>
+        </div>
+
+        <!-- Imagen -->
+        {% if page.imagen %}
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="{{ page.imagen.url }}" alt="{{ page.titulo }}" 
+                     style="max-width: 100%; height: auto; border-radius: 8px;">
+            </div>
+        {% endif %}
+
+        <!-- Contenido -->
+        <div style="line-height: 1.6; margin: 20px 0;">
+            {{ page.contenido|safe }}
+        </div>
+
+        <!-- Botones de edición/eliminación -->
+        {% if user == page.autor or user.is_superuser %}
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <a href="{% url 'page_update' page.pk %}" 
+                   style="padding: 8px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">
+                    Editar
+                </a>
+                <a href="{% url 'page_delete' page.pk %}" 
+                   style="padding: 8px 15px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 4px;">
+                    Eliminar
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 30px auto; padding: 20px;">
+   <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+       {% if auto.imagen %}
+           <div style="text-align: center; margin-bottom: 20px;">
+               <img src="{{ auto.imagen.url }}" alt="{{ auto.marca }} {{ auto.modelo }}" 
+                    style="max-width: 100%; height: auto; border-radius: 8px;">
+           </div>
+       {% endif %}
+
+       <h2 style="color: #333; margin-bottom: 15px;">{{ auto.marca }} {{ auto.modelo }}</h2>
+       
+       <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+           <p><strong>Año:</strong> {{ auto.año }}</p>
+           <p><strong>Publicado por:</strong> {{ auto.usuario.username }}</p>
+           <p><strong>Fecha de publicación:</strong> {{ auto.fecha_publicacion|date:"d/m/Y" }}</p>
+           {% if auto.categorias.all %}
+               <p><strong>Categorías:</strong> 
+                   {% for categoria in auto.categorias.all %}
+                       {{ categoria.nombre }}{% if not forloop.last %}, {% endif %}
+                   {% endfor %}
+               </p>
+           {% endif %}
+       </div>
+
+       <div style="line-height: 1.6;">
+           <h3 style="color: #444; margin-bottom: 10px;">Descripción</h3>
+           <p>{{ auto.descripcion }}</p>
+       </div>
+
+       {% if user.is_authenticated and not user.is_superuser %}
+           <div style="margin-top: 20px;">
+               <button onclick="toggleLike('{{ auto.id }}', this)"
+                       class="like-button"
+                       data-auto-id="{{ auto.id }}"
+                       style="padding: 10px 20px;
+                              background-color: {% if user in auto.likes.all %}#ff4444{% else %}#520000{% endif %};
+                              color: white;
+                              border: none;
+                              border-radius: 4px;
+                              cursor: pointer;">
+                   {% if user in auto.likes.all %}
+                       Ya no me gusta
+                   {% else %}
+                       Me gusta
+                   {% endif %}
+               </button>
+           </div>
+       {% endif %}
+
+       {% if user.is_superuser %}
+            <div style="margin-top: 20px;">
+                <a href="{% url 'auto_editar' auto.pk %}" 
+                    style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; margin-right: 10px;">
+                     Editar
+                </a>
+                <a href="{% url 'auto_eliminar' auto.pk %}?next={{ request.resolver_match.url_name }}" 
+                    style="display: inline-block; padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 4px;">
+            🗑️ Eliminar
+                </a>
+            </div>
+        {% endif %}
+   </div>
+</div>
+
+<script>
+function getCookie(name) {
+   let cookieValue = null;
+   if (document.cookie && document.cookie !== '') {
+       const cookies = document.cookie.split(';');
+       for (let i = 0; i < cookies.length; i++) {
+           const cookie = cookies[i].trim();
+           if (cookie.substring(0, name.length + 1) === (name + '=')) {
+               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+               break;
+           }
+       }
+   }
+   return cookieValue;
+}
+
+function toggleLike(autoId, button) {
+   const csrftoken = getCookie('csrftoken');
+   
+   fetch(`/auto/like/${autoId}/`, {
+       method: 'POST',
+       headers: {
+           'X-CSRFToken': csrftoken,
+           'Content-Type': 'application/json',
+       },
+       credentials: 'same-origin'
+   })
+   .then(response => {
+       if (!response.ok) throw new Error('Network response was not ok');
+       return response.json();
+   })
+   .then(data => {
+       if (data.liked) {
+           button.style.backgroundColor = '#ff4444';
+           button.textContent = 'Ya no me gusta';
+       } else {
+           button.style.backgroundColor = '#520000';
+           button.textContent = 'Me gusta';
+       }
+   })
+   .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

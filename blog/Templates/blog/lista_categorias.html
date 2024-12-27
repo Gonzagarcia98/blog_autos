@@ -1,0 +1,26 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 90%; margin: 0 auto; padding: 0 20px;">
+    <h2 style="text-align: center; margin: 20px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 10px;">
+        Categorías Disponibles
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 300px); gap: 20px; justify-content: center;">
+        {% for categoria in categorias %}
+            <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <h3 style="color: #333; margin-bottom: 10px; font-size: 20px;">{{ categoria.nombre }}</h3>
+                <p style="margin: 8px 0; line-height: 1.4; font-size: 14px;">{{ categoria.descripcion }}</p>
+                <div style="margin-top: 15px;">
+                    <h4 style="font-size: 16px; margin-bottom: 8px;">Autos en esta categoría:</h4>
+                    {% for auto in categoria.autos_categoria.all %}
+                        <p style="margin: 4px 0; font-size: 14px;">• {{ auto.marca }} {{ auto.modelo }}</p>
+                    {% empty %}
+                        <p style="font-size: 14px; color: #666;">No hay autos en esta categoría</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

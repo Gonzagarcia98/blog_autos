@@ -1,0 +1,30 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 30px auto; padding: 20px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+        <h2 style="color: #333; margin-bottom: 20px;">Confirmación Adicional</h2>
+        
+        <p style="font-size: 16px; margin-bottom: 20px;">
+            Para confirmar la eliminación, por favor resuelve la siguiente operación:
+        </p>
+        
+        <p style="font-size: 24px; margin-bottom: 20px;">
+            <strong>{{ num1 }} + {{ num2 }} = ?</strong>
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <input type="number" name="respuesta" 
+                   style="padding: 8px; margin-bottom: 20px; width: 100px; text-align: center; font-size: 20px;"
+                   required autofocus>
+            <br>
+            <button type="submit" name="confirm_calculo" value="yes"
+                    style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Confirmar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 90%; margin: 0 auto; padding: 0 20px;">
+    <h2 style="text-align: center; margin: 20px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 10px;">
+        {% if editing %}Editar Auto{% else %}Nuevo Auto{% endif %}
+    </h2>
+
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Marca:</label>
+                {{ form.marca }}
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Modelo:</label>
+                {{ form.modelo }}
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Año:</label>
+                {{ form.año }}
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Descripción:</label>
+                {{ form.descripcion }}
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Imagen:</label>
+                <input type="file" name="imagen" accept="image/*" style="width: 100%; padding: 5px;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Categorías:</label>
+                <select name="categorias" multiple style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+                    {% for categoria in form.categorias.field.queryset %}
+                        <option value="{{ categoria.id }}" 
+                            {% if categoria in form.categorias.initial.all %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <small style="display: block; margin-top: 5px; color: #666;">
+                    Mantén presionada la tecla Ctrl (Cmd en Mac) para seleccionar múltiples categorías
+                </small>
+            </div>
+
+            <button type="submit" style="display: inline-block; padding: 8px 15px; background-color: #6d0000; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Guardar
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

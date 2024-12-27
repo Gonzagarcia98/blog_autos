@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 30px auto; padding: 20px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+        <h2 style="color: #333; margin-bottom: 20px;">Confirmar Eliminación</h2>
+        
+        <p style="margin-bottom: 20px;">
+            ¿Estás seguro de que quieres eliminar "{{ page.titulo }}"?
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" 
+                    style="padding: 8px 15px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">
+                Sí, eliminar
+            </button>
+            <a href="{% url 'page_detail' page.pk %}"
+               style="display: inline-block; padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">
+                Cancelar
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

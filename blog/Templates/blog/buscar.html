@@ -1,0 +1,22 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    {% if autos %}
+        <div style="display: grid; grid-template-columns: repeat(3, 300px); gap: 20px; justify-content: center;">
+            {% for auto in autos %}
+                <article>
+                    {% if auto.imagen %}
+                        <img src="{{ auto.imagen.url }}" alt="{{ auto.marca }} {{ auto.modelo }}" 
+                             style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                    {% endif %}
+                    <h3>{{ auto.marca }} {{ auto.modelo }}</h3>
+                    <p>Año: {{ auto.año }}</p>
+                    <p>{{ auto.descripcion }}</p>
+                    <p>Autor: {{ auto.usuario.username }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center; margin-top: 20px;">No se encontraron resultados para tu búsqueda.</p>
+    {% endif %}
+{% endblock %}  

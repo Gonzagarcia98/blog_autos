@@ -1,0 +1,18 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 30px auto; padding: 20px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+        <h2 style="color: #333; margin-bottom: 20px;">Auto Eliminado</h2>
+        
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            <strong>{{ marca }} {{ modelo }} {{ año }}</strong> eliminado con éxito.
+        </p>
+
+        <a href="{% if next == 'profile' %}{% url 'accounts:profile' %}{% else %}{% url 'home' %}{% endif %}"
+           style="display: inline-block; padding: 10px 20px; background-color: #520000; color: white; text-decoration: none; border-radius: 4px;">
+            Volver
+        </a>
+    </div>
+</div>
+{% endblock %}

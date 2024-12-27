@@ -1,0 +1,112 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 90%; margin: 0 auto; padding: 20px;">
+    <h2 style="text-align: center; margin: 20px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 10px;">
+        Últimos Autos
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 300px); gap: 20px; justify-content: center;">
+        {% for auto in autos %}
+            <article style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <a href="{% url 'auto_detalle' auto.pk %}" style="text-decoration: none; color: inherit;">
+                    {% if auto.imagen %}
+                        <div style="text-align: center; margin: 10px 0;">
+                            <img src="{{ auto.imagen.url }}" alt="{{ auto.marca }} {{ auto.modelo }}" 
+                                 style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                        </div>
+                    {% endif %}
+                    
+                    <h3 style="color: #333; margin-bottom: 10px; font-size: 20px;">{{ auto.marca }} {{ auto.modelo }}</h3>
+                    <p style="font-size: 14px; margin: 4px 0;"><strong>Año:</strong> {{ auto.año }}</p>
+                    <p style="margin: 8px 0; line-height: 1.4; font-size: 14px;">{{ auto.descripcion }}</p>
+                </a>
+                
+                <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                    Publicado por: {{ auto.usuario.username }}
+                </p>
+
+                <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+                    {% if user.is_superuser %}
+                        <div style="display: flex; gap: 10px;">
+                            <a href="{% url 'auto_editar' auto.pk %}" 
+                               style="display: inline-block; padding: 5px 10px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 13px;">
+                                Editar
+                            </a>
+                            <a href="{% url 'auto_eliminar' auto.pk %}?next=home" 
+                               style="display: inline-block; padding: 5px 10px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 4px; font-size: 13px;">
+                                🗑️ Eliminar
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    {% if user.is_authenticated and not user.is_superuser %}
+                        <button onclick="toggleLike('{{ auto.id }}', this)"
+                                class="like-button"
+                                data-auto-id="{{ auto.id }}"
+                                style="padding: 5px 10px;
+                                       background-color: {% if user in auto.likes.all %}#ff4444{% else %}#520000{% endif %};
+                                       color: white;
+                                       border: none;
+                                       border-radius: 4px;
+                                       cursor: pointer;
+                                       font-size: 13px;">
+                            {% if user in auto.likes.all %}
+                                Ya no me gusta
+                            {% else %}
+                                Me gusta
+                            {% endif %}
+                        </button>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <p style="text-align: center; grid-column: 1 / -1;">No hay autos publicados aún.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function toggleLike(autoId, button) {
+    const csrftoken = getCookie('csrftoken');
+    
+    fetch(`/auto/like/${autoId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+    })
+    .then(data => {
+        if (data.liked) {
+            button.style.backgroundColor = '#ff4444';
+            button.textContent = 'Ya no me gusta';
+        } else {
+            button.style.backgroundColor = '#520000';
+            button.textContent = 'Me gusta';
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

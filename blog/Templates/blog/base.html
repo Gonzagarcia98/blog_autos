@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+    <title>{% block title %}Los autos de Gonza{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #520000;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .auth-menu {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 10px;
+            margin-bottom: 10px;
+        }
+
+        .auth-menu a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            padding: 5px 10px;
+            background-color: #000000;
+            border-radius: 3px;
+        }
+
+        .auth-menu a:hover {
+            background-color: #555;
+        }
+
+        nav {
+            margin: 1rem 0;
+        }
+
+        nav a {
+            color: rgb(255, 255, 255);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            background-color: #000000;
+            border-radius: 3px;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="auth-menu">
+            {% if user.is_authenticated %}
+                <span>Hola, {{ user.username }}!</span>
+                <a href="{% url 'accounts:profile' %}">Mi Perfil</a>
+                <a href="{% url 'accounts:logout' %}">Cerrar Sesión</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Iniciar Sesión</a>
+                <a href="{% url 'accounts:register' %}">Registrarse</a>
+            {% endif %}
+        </div>
+
+        <h1>Blog de Autos</h1>
+        
+        <nav>
+            <a href="{% url 'home' %}">Inicio</a>
+            <a href="{% url 'sobre_mi' %}">Acerca de mí</a>
+            <a href="{% url 'page_list' %}">Blog</a>
+            {% if user.is_superuser %}
+                <a href="{% url 'auto_nuevo' %}">Nuevo Auto</a>
+                <a href="{% url 'categoria_nueva' %}">Nueva Categoría</a>
+                <a href="{% url 'lista_categorias' %}">Ver Categorías</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+
+</html>

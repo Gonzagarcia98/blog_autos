@@ -1,0 +1,33 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 30px auto; padding: 20px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+        <h2 style="color: #333; margin-bottom: 20px;">Confirmar Eliminación</h2>
+        
+        <p style="font-size: 16px; margin-bottom: 20px;">
+            ¿Estás seguro de que quieres eliminar este auto?
+        </p>
+        
+        <p style="font-size: 18px; margin-bottom: 20px;">
+            <strong>{{ auto.marca }} {{ auto.modelo }} ({{ auto.año }})</strong>
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                <button type="submit" name="confirm_delete" value="yes" 
+                        style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Sí
+                </button>
+            </form>
+            
+            <a href="{% if next == 'profile' %}{% url 'accounts:profile' %}{% else %}{% url 'home' %}{% endif %}"
+               style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">
+                No
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
