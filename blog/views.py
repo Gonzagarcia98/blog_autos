@@ -13,13 +13,40 @@ from django.urls import reverse_lazy
 from .models import Page
 from .mixins import SuperuserRequiredMixin
 from .decorators import superuser_required
+from django.contrib.auth.models import User
 
 def es_superusuario(user):
     return user.is_superuser
 
 def home(request):
+    # Iniciar el queryset con todos los autos
     autos = Auto.objects.all()
-    return render(request, 'blog/home.html', {'autos': autos})
+    context = {'autos': autos}
+    
+    # Solo procesar filtros si el usuario está autenticado
+    if request.user.is_authenticated:
+        # Obtener todas las marcas y modelos únicos
+        marcas = Auto.objects.values_list('marca', flat=True).distinct()
+        modelos = Auto.objects.values_list('modelo', flat=True).distinct()
+        
+        # Aplicar filtros si existen
+        marca = request.GET.get('marca')
+        modelo = request.GET.get('modelo')
+        
+        if marca:
+            autos = autos.filter(marca=marca)
+        if modelo:
+            autos = autos.filter(modelo=modelo)
+            
+        # Agregar datos de filtros al contexto
+        context.update({
+            'marcas': marcas,
+            'modelos': modelos,
+            'marca_seleccionada': marca,
+            'modelo_seleccionado': modelo
+        })
+    
+    return render(request, 'blog/home.html', context)
 
 @login_required
 @superuser_required
