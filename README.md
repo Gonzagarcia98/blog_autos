@@ -76,6 +76,8 @@ Un sistema de comentarios
 Más filtros de busqueda
 Y obviamente, mayor estilado y diseño.
 
+Les dejo tambien el link al video: https://drive.google.com/drive/folders/1sx88VgY98LggU0quBOUkkg0CPsPH4NYX?usp=sharing 
+
 Espero que con todo lo que tiene para mejorar, sirva para empezar este camino.
 
 Felices fiestas!!! 
